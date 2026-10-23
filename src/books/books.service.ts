@@ -2,100 +2,76 @@ import { Injectable } from '@nestjs/common';
 
 import { Book } from './entities/book-entity.js';
 import { CreateBookDto } from './dto/create-book.dto.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BooksService {
-  private books: Book[] = [
-    {
-      id: 1,
-      title: 'The Great Gatsby',
-      author: 'F. Scott Fitzgerald',
-      isbn: '978-0-74327-3565',
-      publishedYear: 1925,
-      isAvailable: true,
-    },
-    {
-      id: 2,
-      title: 'To Kill a Mockingbird',
-      author: 'Harper Lee',
-      isbn: '978-0-06-112008-4',
-      publishedYear: 1960,
-      isAvailable: false,
-    },
-  ];
 
+  constructor(
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>
+
+  ){}
+  
   // GET semua buku
-  findAll(): Book[] {
-    return this.books;
+  async findAll():Promise<Book[]> {
+    return await this.bookRepository.find({
+      order:{createdAt: 'DESC'}
+    });
   }
 
-  // GET buku berdasarkan ID
-  findOne(id: number): Book {
-    const book = this.books.find(
-      (book) => book.id === id,
-    );
+  // // GET buku berdasarkan ID
+  // findOne(id: number): Book {
+  //   const book = this.books.find(
+  //     (book) => book.id === id,
+  //   );
 
-    if (!book) {
-      throw new Error('Book not found');
-    }
+  //   if (!book) {
+  //     throw new Error('Book not found');
+  //   }
 
-    return book;
-  }
+  //   return book;
+  // }
 
   // POST tambah buku
-  simpanData(createBookDto: CreateBookDto): Book {
-    const newId =
-      this.books.length > 0
-        ? Math.max(
-            ...this.books.map((book) => book.id),
-          ) + 1
-        : 1;
+   async simpanData(createBookDto: CreateBookDto): Promise<Book> {
+    const newBook = this.bookRepository.create(createBookDto);
 
-    const newBook: Book = {
-      id: newId,
-      title: createBookDto.title,
-      author: createBookDto.author,
-      isbn: createBookDto.isbn,
-      publishedYear: createBookDto.publishedYear,
-      isAvailable: true,
-    };
-
-    this.books.push(newBook);
-
-    return newBook;
+    return await this.bookRepository.save (newBook);
   }
 
-  // PUT update buku
-  updateData(
-    id: number,
-    createBookDto: CreateBookDto,
-  ): Book {
-    const bookIndex = this.books.findIndex(
-      (book) => book.id === id,
-    );
+  // // PUT update buku
+  // updateData(
+  //   id: number,
+  //   createBookDto: CreateBookDto,
+  // ): Book {
+  //   const bookIndex = this.books.findIndex(
+  //     (book) => book.id === id,
+  //   );
 
-    if (bookIndex === -1) {
-      throw new Error('Book not found');
-    }
+  //   if (bookIndex === -1) {
+  //     throw new Error('Book not found');
+  //   }
 
-    this.books[bookIndex] = {
-      ...this.books[bookIndex],
-      ...createBookDto,
-    };
+  //   this.books[bookIndex] = {
+  //     ...this.books[bookIndex],
+  //     ...createBookDto,
+  //   };
 
-    return this.books[bookIndex];
-  }
+  //   return this.books[bookIndex];
+  // }
 
-  // DELETE buku
-  deleteData(id: number): void {
-    const bookIndex = this.books.findIndex(
-      (book) => book.id === id,
-    );
+  // // DELETE buku
+  // deleteData(id: number): void {
+  //   const bookIndex = this.books.findIndex(
+  //     (book) => book.id === id,
+  //   );
 
-    if (bookIndex === -1) {
-      throw new Error('Book not found');
-    }
+  //   if (bookIndex === -1) {
+  //     throw new Error('Book not found');
+  //   }
 
-    this.books.splice(bookIndex, 1);
-  }
+  //   this.books.splice(bookIndex, 1);
+  // }
 }

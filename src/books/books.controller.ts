@@ -21,17 +21,17 @@ simpanData(@Body() CreateBookDto: CreateBookDto){
     return this.booksService.simpanData(CreateBookDto);
   }
 
-//   mengupdate data
-@Put(':id')
-updateData(
-  @Param('id') id: string, 
-  @Body() createBookDto: CreateBookDto){
-    return this.booksService.updateData(Number(id), createBookDto);
-  }
+// //   mengupdate data
+// @Put(':id')
+// updateData(
+//   @Param('id') id: string, 
+//   @Body() createBookDto: CreateBookDto){
+//     return this.booksService.updateData(Number(id), createBookDto);
+//   }
 
-//   menghapus data
-@Delete(':id')
-deleteData(@Param('id') id: string): void {
-    this.booksService.deleteData(parseInt(id));
-  }
+// //   menghapus data
+// @Delete(':id')
+// deleteData(@Param('id') id: string): void {
+//     this.booksService.deleteData(parseInt(id));
+//   }
 }
