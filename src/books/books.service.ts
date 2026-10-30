@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Book } from './entities/book-entity.js';
 import { CreateBookDto } from './dto/create-book.dto.js';
@@ -22,17 +22,17 @@ export class BooksService {
   }
 
   // // GET buku berdasarkan ID
-  // findOne(id: number): Book {
-  //   const book = this.books.find(
-  //     (book) => book.id === id,
-  //   );
 
-  //   if (!book) {
-  //     throw new Error('Book not found');
-  //   }
-
-  //   return book;
-  // }
+    async findOne(id: string): Promise<Book>{
+      // cari berdasarkan id
+      const book = await this.bookRepository.findOneBy({id})
+      if(!book){
+        throw new NotFoundException(`Buku ${id} tidak ditemukan`)
+      }
+      // jika buku ditemukann
+      return book
+    }
+  
 
   // POST tambah buku
    async simpanData(createBookDto: CreateBookDto): Promise<Book> {
@@ -41,37 +41,24 @@ export class BooksService {
     return await this.bookRepository.save (newBook);
   }
 
-  // // PUT update buku
-  // updateData(
-  //   id: number,
-  //   createBookDto: CreateBookDto,
-  // ): Book {
-  //   const bookIndex = this.books.findIndex(
-  //     (book) => book.id === id,
-  //   );
 
-  //   if (bookIndex === -1) {
-  //     throw new Error('Book not found');
-  //   }
 
-  //   this.books[bookIndex] = {
-  //     ...this.books[bookIndex],
-  //     ...createBookDto,
-  //   };
+  // PUT update buku
+  async updateData(id: string, createBookDto: CreateBookDto): Promise<Book>{
+    const book = await this.findOne(id)
+    const updatedBook = await this.bookRepository.merge(book, createBookDto)
 
-  //   return this.books[bookIndex];
-  // }
+    return await this.bookRepository.save(updatedBook)
+  }
 
   // // DELETE buku
-  // deleteData(id: number): void {
-  //   const bookIndex = this.books.findIndex(
-  //     (book) => book.id === id,
-  //   );
+  async deleteData(id: string): Promise<{message: string, deletedId: string}> {
+    await this.findOne(id)
+    await this.bookRepository.softDelete(id)
 
-  //   if (bookIndex === -1) {
-  //     throw new Error('Book not found');
-  //   }
-
-  //   this.books.splice(bookIndex, 1);
-  // }
+    return {
+      message:`Data ${id} berhasil dihapus`,
+      deletedId: id
+    }
+  }
 }
