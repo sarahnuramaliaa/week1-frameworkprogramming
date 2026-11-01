@@ -8,6 +8,16 @@ import { LogMiddlewareMiddleware } from './middleware/log-middleware/log-middlew
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module.js';
+import { CategoriesModule } from './categories/categories.module.js';
+import { CustomerAddressesModule } from './customer-addresses/customer-addresses.module.js';
+import { PublishersModule } from './publishers/publishers.module.js';
+import { AuthorsModule } from './authors/authors.module.js';
+import { BookAuthorsModule } from './book-authors/book-authors.module.js';
+import { OrdersModule } from './orders/orders.module.js';
+import { OrderItemsModule } from './order-items/order-items.module.js';
+import { PaymentsModule } from './payments/payments.module.js';
+import { ShipmentsModule } from './shipments/shipments.module.js';
 
 @Module({
   imports: [
@@ -42,7 +52,27 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: configService.get<string>('NODE_ENV') === 'development'
           
       })
-    })
+    }),
+
+    UsersModule,
+
+    CategoriesModule,
+
+    CustomerAddressesModule,
+
+    PublishersModule,
+
+    AuthorsModule,
+
+    BookAuthorsModule,
+
+    OrdersModule,
+
+    OrderItemsModule,
+
+    PaymentsModule,
+
+    ShipmentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

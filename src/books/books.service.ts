@@ -51,7 +51,7 @@ export class BooksService {
     return await this.bookRepository.save(updatedBook)
   }
 
-  // // DELETE buku
+   // DELETE buku
   async deleteData(id: string): Promise<{message: string, deletedId: string}> {
     await this.findOne(id)
     await this.bookRepository.softDelete(id)
